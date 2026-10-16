@@ -4,17 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nolte FZE Hub Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
 <style>
   :root{--yellow:#FFD100;--ink:#1a1a1a}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:#141414;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:#fff;overflow:hidden}
   .hero{position:relative;height:100%;min-height:360px;background:#141414 url("bg.jpg") right center/cover no-repeat}
-  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.88) 0%,rgba(10,10,10,.65) 35%,rgba(10,10,10,.15) 62%,rgba(10,10,10,0) 80%)}
-  .inner{position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;padding:28px 56px}
+  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.9) 0%,rgba(10,10,10,.7) 35%,rgba(10,10,10,.25) 62%,rgba(10,10,10,.1) 100%)}
+  .inner{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:28px 56px 30px;padding-right:calc(56px + var(--panel-w,260px) + 32px)}
   .eyebrow{color:var(--yellow);font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;margin:0 0 8px}
   h1{margin:0;font-size:40px;line-height:1.12;font-weight:700;max-width:680px}
-  .sub{margin:12px 0 22px;font-size:16px;line-height:1.5;color:rgba(255,255,255,.92);max-width:540px}
-  form{display:flex;align-items:center;background:#fff;border-radius:8px;max-width:620px;padding:5px 5px 5px 14px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .sub{margin:12px 0 30px;font-size:16px;line-height:1.5;color:rgba(255,255,255,.92);max-width:540px}
+  form{display:flex;align-items:center;background:#fff;border-radius:8px;max-width:640px;padding:5px 5px 5px 14px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
   form svg{flex:0 0 auto;color:#333}
   input{flex:1 1 auto;min-width:0;border:0;outline:0;font:inherit;font-size:15px;padding:10px 12px;color:#1f1f1f;background:transparent}
   input::placeholder{color:#6b6b6b}
@@ -26,9 +29,15 @@
   .pop span{font-size:13px;font-weight:600;margin-right:4px}
   .pop a{font-size:13px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:5px 15px;background:rgba(0,0,0,.25)}
   .pop a:hover{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
-  /* Narrower embeds (e.g. a two-thirds column): slide the photo so the "Kitchens for life" panel does not sit under the text */
-  @media (max-width:1150px){.hero{background-position:62% center}.inner{padding:24px 40px}h1{font-size:34px}.sub{font-size:15px;max-width:460px}}
-  @media (max-width:760px){.inner{padding:20px}h1{font-size:28px}.hero::before{background:rgba(10,10,10,.7)}button{padding:10px 14px}}
+  /* "Kitchens for life" panel */
+  .panel{position:absolute;top:28px;bottom:28px;right:40px;width:var(--panel-w,260px);background:rgba(28,28,28,.82);border-radius:10px;padding:0 28px;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px)}
+  .panel .script{font-family:"Allura","Segoe Script","Brush Script MT",cursive;font-size:64px;line-height:.95;color:#fff;margin:0 0 26px;transform:rotate(-6deg);transform-origin:left center}
+  .panel .script span{display:block;padding-left:22px}
+  .panel .rule{width:44px;height:3px;background:var(--yellow);margin:0 0 16px}
+  .panel .tag{font-size:14px;line-height:1.5;color:#fff;margin:0}
+  /* Narrower embeds (two-thirds column) */
+  @media (max-width:1150px){:root{--panel-w:200px}.inner{padding-left:40px;padding-right:calc(40px + 200px + 24px)}h1{font-size:32px}.sub{font-size:15px}.panel{right:24px;padding:0 20px}.panel .script{font-size:50px}.panel .script span{padding-left:16px}}
+  @media (max-width:760px){.panel{display:none}.inner{padding:20px}h1{font-size:28px}.hero::before{background:rgba(10,10,10,.7)}button{padding:10px 14px}}
 </style>
 </head>
 <body>
@@ -50,6 +59,11 @@
       <a href="#" data-q="Discontinued">Discontinued Items</a>
     </div>
   </div>
+  <aside class="panel" aria-label="Kitchens for life">
+    <p class="script">Kitchens<span>for life</span></p>
+    <div class="rule"></div>
+    <p class="tag">German Quality.<br>A Better Living.</p>
+  </aside>
 </section>
 <script>
   var SITE = "https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub";
