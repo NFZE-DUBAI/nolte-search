@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ Categories</title>
+<style>
+:root{--yellow:#FFD100;--ink:#1f1f1f;--muted:#6b6b6b;--line:#e6e6e6}
+*{box-sizing:border-box}
+html,body{margin:0;overflow:hidden;background:#fff;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+h2{font-size:24px;font-weight:600;margin:4px 2px 6px}
+p.sub{font-size:14px;color:var(--muted);margin:0 2px 16px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:2px}
+a.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .15s}
+a.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:translateY(-2px)}
+a.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.top{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#2b2b2b 0%,#151515 100%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--yellow)}
+.top .big{width:64px;height:64px;color:var(--yellow);transition:transform .2s}
+a.card:hover .big{transform:scale(1.08)}
+.top .lbl{position:absolute;left:14px;top:12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#bdbdbd;font-weight:600}
+.body{position:relative;flex:1;padding:12px 12px 28px}
+.t{font-size:15px;font-weight:600;line-height:1.3}
+.d{font-size:12px;line-height:1.4;color:var(--muted);margin-top:4px}
+.arr{position:absolute;right:12px;bottom:8px;width:16px;height:16px;color:#333}
+a.card:hover .arr{color:#000}
+@media (max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<h2>Browse FAQ by Category</h2>
+<p class="sub">Choose a category to find answers to common questions.</p>
+<div class="grid">
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Design-FAQ.aspx">
+<div class="top"><span class="lbl">FAQ</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+</div>
+<div class="body"><div class="t">Design</div><div class="d">Kitchen planning, layouts, finishes and design questions.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Technical-FAQ.aspx">
+<div class="top"><span class="lbl">FAQ</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+</div>
+<div class="body"><div class="t">Technical</div><div class="d">Installation, fittings, appliances and technical specifications.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Sales-FAQ.aspx">
+<div class="top"><span class="lbl">FAQ</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-6"/><path d="M15 8h5v5"/></svg>
+</div>
+<div class="body"><div class="t">Sales</div><div class="d">Pricing, quotations, orders and customer questions.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Logistics-FAQ.aspx">
+<div class="top"><span class="lbl">FAQ</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+</div>
+<div class="body"><div class="t">Logistics</div><div class="d">Shipping, delivery times, tracking and spare parts.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+</div>
+</body>
+</html>
