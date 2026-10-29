@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document Cards</title>
+<style>
+:root{--yellow:#FFD100;--ink:#1f1f1f;--muted:#6b6b6b;--line:#e6e6e6}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+body{overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:16px;padding:2px}
+button.card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .15s}
+button.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:translateY(-2px)}
+button.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.img{aspect-ratio:16/10;background:#ddd center/cover no-repeat}
+.body{position:relative;padding:12px 40px 14px 14px;font-size:14px;font-weight:600;line-height:1.35}
+.body svg{position:absolute;right:12px;top:50%;margin-top:-8px;width:16px;height:16px;color:#333}
+.body small{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:3px}
+@media (max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Viewer overlay */
+.ov{position:fixed;inset:0;background:#1b1b1b;display:none;flex-direction:column;z-index:10}
+.ov.open{display:flex}
+.bar{flex:0 0 auto;height:48px;display:flex;align-items:center;gap:8px;padding:0 8px 0 16px;background:#141414;color:#fff;border-bottom:3px solid var(--yellow)}
+.bar .ttl{flex:1 1 auto;min-width:0;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar a,.bar button{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:600;color:#fff;cursor:pointer}
+.bar a:hover,.bar button:hover{background:rgba(255,255,255,.12)}
+.bar .x{background:var(--yellow);color:#141414;padding:0 14px}
+.bar .x:hover{background:#ffdd33}
+.bar svg{width:16px;height:16px}
+.ov iframe{flex:1 1 auto;width:100%;border:0;background:#2a2a2a}
+@media (max-width:600px){.bar .lbl{display:none}}
+</style>
+</head>
+<body>
+<div class="grid" id="grid"></div>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovt">
+  <div class="bar">
+    <span class="ttl" id="ovt"></span>
+    <a id="dl" href="#" target="_blank" rel="noopener" title="Download">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lbl">Download</span></a>
+    <button class="x" id="x" title="Close and go back to the cards">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg><span class="lbl">Close</span></button>
+  </div>
+  <iframe id="fr" title="Document viewer" allow="fullscreen"></iframe>
+</div>
+
+<script>
+var SITE = "https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub";
+var IMG = SITE + "/SiteAssets/SitePages/TopicHome(1)/";
+
+/* ---------------------------------------------------------------
+   CARD SETS - pick one with the page address, e.g. pdf-cards.html#product-guide
+   id  = the file's UniqueId in SharePoint (opens it in the viewer)
+   f   = file path inside the site (used for Download)
+   --------------------------------------------------------------- */
+var SETS = {
+  "product-guide": [
+    {t:"Nolte Küchen – Product Guide 2027", img:IMG + "pg-nolte-2027.jpg",
+     id:"f6a8a0c4-2d06-4a9c-8674-c8eb1db3fe48", f:"/Shared Documents/NK_PRODUCT GUIDE-2027.pdf"},
+    {t:"Express Küchen – Product Guide 2026", img:IMG + "EK_PRODUCT-GUIDE_2026_ENGLISH.jpeg",
+     id:"2b0de2d3-31ef-4233-b871-10111bd90772", f:"/Shared Documents/EK_PRODUCT GUIDE_2026_ENGLISH.pdf"},
+    {t:"Nolte Spa – Product Guide 2026", img:IMG + "pg-nolte-spa-2026.jpg",
+     id:"79eec543-ee4c-40c3-929b-145eff09c50f", f:"/Shared Documents/NS-PRODUCT GUIDE-2026_GB.pdf"}
+  ]
+};
+
+var key = (location.hash || "#product-guide").slice(1).split("&")[0];
+var cards = SETS[key] || [];
+var grid = document.getElementById("grid");
+var arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+
+cards.forEach(function(c){
+  var b = document.createElement("button");
+  b.className = "card"; b.type = "button";
+  var im = document.createElement("div"); im.className = "img"; im.style.backgroundImage = "url('" + c.img.replace(/'/g, "%27") + "')";
+  var bd = document.createElement("div"); bd.className = "body"; bd.textContent = c.t; bd.insertAdjacentHTML("beforeend", arrow);
+  b.appendChild(im); b.appendChild(bd);
+  b.addEventListener("click", function(){ openDoc(c); });
+  grid.appendChild(b);
+});
+
+var ov = document.getElementById("ov"), fr = document.getElementById("fr"), lastCard = null;
+
+function fileUrl(f){ return SITE + f.split("/").map(encodeURIComponent).join("/"); }
+
+function openDoc(c){
+  lastCard = document.activeElement;
+  document.getElementById("ovt").textContent = c.t;
+  document.getElementById("dl").href = fileUrl(c.f) + "?download=1";
+  fr.src = SITE + "/_layouts/15/embed.aspx?UniqueId=" + c.id;
+  ov.classList.add("open");
+  var el = document.documentElement;
+  var rq = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (rq) { try { var p = rq.call(el); if (p && p.catch) p.catch(function(){}); } catch (e) {} }
+  document.getElementById("x").focus();
+}
+
+function closeDoc(){
+  ov.classList.remove("open");
+  fr.src = "about:blank";
+  var fe = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fe) { var ex = document.exitFullscreen || document.webkitExitFullscreen; try { var p = ex.call(document); if (p && p.catch) p.catch(function(){}); } catch (e) {} }
+  if (lastCard) lastCard.focus();
+}
+
+document.getElementById("x").addEventListener("click", closeDoc);
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && ov.classList.contains("open")) closeDoc(); });
+// Leaving full screen (e.g. with Esc) also closes the document and returns to the cards.
+["fullscreenchange","webkitfullscreenchange"].forEach(function(ev){
+  document.addEventListener(ev, function(){
+    if (!(document.fullscreenElement || document.webkitFullscreenElement) && ov.classList.contains("open")) closeDoc();
+  });
+});
+</script>
+</body>
+</html>
