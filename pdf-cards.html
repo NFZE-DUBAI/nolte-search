@@ -308,7 +308,7 @@ cards.forEach(function(c){
   b.className = "card"; b.type = "button";
   var im = document.createElement("div");
   var src = c.img || (c.list ? thumb(c.list, c.id) : "");
-  im.className = "img" + (c.img ? "" : " doc");
+  im.className = "img" + (c.img || set.tag ? "" : " doc");
   if (!c.img) { var tg = document.createElement("span"); tg.className = "tag"; tg.textContent = set.tag || "PDF"; im.appendChild(tg); }
   if (src) { src = src.replace(/'/g, "%27"); if (io) { im.setAttribute("data-bg", src); io.observe(im); } else im.style.backgroundImage = "url('" + src + "')"; }
   var bd = document.createElement("div"); bd.className = "body"; bd.textContent = c.t;
