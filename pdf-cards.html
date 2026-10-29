@@ -7,17 +7,33 @@
 <style>
 :root{--yellow:#FFD100;--ink:#1f1f1f;--muted:#6b6b6b;--line:#e6e6e6}
 *{box-sizing:border-box}
-html,body{margin:0;background:#fff;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
-body{overflow:hidden}
-.grid{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:16px;padding:2px}
+html,body{margin:0;height:100%;background:#fff;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+body{overflow:hidden;display:flex;flex-direction:column}
+.tools{flex:0 0 auto;display:none;flex-wrap:wrap;align-items:center;gap:10px;padding:2px 2px 14px}
+.tools.on{display:flex}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{all:unset;cursor:pointer;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#333}
+.tabs button:hover{border-color:#bbb}
+.tabs button.on{background:#141414;border-color:#141414;color:#fff}
+.tabs button .n{font-weight:400;opacity:.7;margin-left:4px}
+.find{margin-left:auto;display:flex;align-items:center;gap:6px;border:1px solid #cfcfcf;border-radius:6px;padding:0 10px;min-width:220px;background:#fff}
+.find:focus-within{border-color:#141414;box-shadow:0 0 0 2px var(--yellow)}
+.find input{all:unset;flex:1;font-size:14px;padding:8px 0;color:#1f1f1f}
+.find svg{width:16px;height:16px;color:#666}
+.scroll{flex:1 1 auto;overflow:auto;padding:2px 4px 8px 2px}
+.grid{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:16px}
+.empty{display:none;padding:30px 4px;color:var(--muted);font-size:14px}
 button.card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .15s}
 button.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:translateY(-2px)}
 button.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
-.img{aspect-ratio:16/10;background:#ddd center/cover no-repeat}
+.img{position:relative;aspect-ratio:16/10;background:#eee center/cover no-repeat}
+.img.doc{background-color:#fff;background-size:contain;border-bottom:1px solid var(--line)}
+.img .tag{position:absolute;left:8px;bottom:8px;background:#c62828;color:#fff;font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 5px;border-radius:3px}
 .body{position:relative;padding:12px 40px 14px 14px;font-size:14px;font-weight:600;line-height:1.35}
 .body svg{position:absolute;right:12px;top:50%;margin-top:-8px;width:16px;height:16px;color:#333}
 .body small{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:3px}
-@media (max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.grid{grid-template-columns:repeat(min(var(--cols,3),3),minmax(0,1fr))}}
+@media (max-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.find{margin-left:0;width:100%}}
 
 /* Viewer overlay */
 .ov{position:fixed;inset:0;background:#1b1b1b;display:none;flex-direction:column;z-index:10}
@@ -34,7 +50,12 @@ button.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 </style>
 </head>
 <body>
-<div class="grid" id="grid"></div>
+<div class="tools" id="tools">
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <label class="find"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+    <input id="q" type="search" placeholder="Search by code, e.g. UDD30" aria-label="Search drawings"></label>
+</div>
+<div class="scroll" id="scroll"><div class="grid" id="grid"></div><div class="empty" id="empty">No matching documents.</div></div>
 
 <div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovt">
   <div class="bar">
@@ -50,46 +71,241 @@ button.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 <script>
 var SITE = "https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub";
 var IMG = SITE + "/SiteAssets/SitePages/TopicHome(1)/";
+var SITE_IDS = "noltefze.sharepoint.com,454a4b7f-cf38-4b2c-8434-b48a779f0950,fffe39df-f879-45ca-be05-d02c9a2b1e15";
+var LIST = {
+  docs: "b13c4dbe-ab0a-49f8-b0da-fe259162bf4f",
+  manuals: "09983e13-0dd2-4a82-972c-b7055a2a75d3",
+  drawings: "9666b171-9ea8-4d36-b3c2-d46b04c1a59c"
+};
+function thumb(list, id){ return SITE + "/_api/v2.1/sites/" + SITE_IDS + "/lists/" + LIST[list] + "/items/" + id + "/driveItem/thumbnails/0/c800x600/content"; }
+function gid(h){ return h.length === 32 ? h.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, "$1-$2-$3-$4-$5") : h; }
 
 /* ---------------------------------------------------------------
-   CARD SETS - pick one with the page address, e.g. pdf-cards.html#product-guide
-   id  = the file's UniqueId in SharePoint (opens it in the viewer)
-   f   = file path inside the site (used for Download)
+   CARD SETS - pick one with the page address, e.g. pdf-cards.html#spare-parts
+   t   = card title
+   id  = the file's UniqueId in SharePoint
+   img = card picture (optional - otherwise the first page of the PDF is used)
    --------------------------------------------------------------- */
 var SETS = {
-  "product-guide": [
-    {t:"Nolte Küchen – Product Guide 2027", img:IMG + "pg-nolte-2027.jpg",
-     id:"f6a8a0c4-2d06-4a9c-8674-c8eb1db3fe48", f:"/Shared Documents/NK_PRODUCT GUIDE-2027.pdf"},
-    {t:"Express Küchen – Product Guide 2026", img:IMG + "EK_PRODUCT-GUIDE_2026_ENGLISH.jpeg",
-     id:"2b0de2d3-31ef-4233-b871-10111bd90772", f:"/Shared Documents/EK_PRODUCT GUIDE_2026_ENGLISH.pdf"},
-    {t:"Nolte Spa – Product Guide 2026", img:IMG + "pg-nolte-spa-2026.jpg",
-     id:"79eec543-ee4c-40c3-929b-145eff09c50f", f:"/Shared Documents/NS-PRODUCT GUIDE-2026_GB.pdf"}
-  ]
+  "product-guide": {items: [
+    {t:"Nolte Küchen – Product Guide 2027", img:IMG + "pg-nolte-2027.jpg", id:"f6a8a0c4-2d06-4a9c-8674-c8eb1db3fe48"},
+    {t:"Express Küchen – Product Guide 2026", img:IMG + "EK_PRODUCT-GUIDE_2026_ENGLISH.jpeg", id:"2b0de2d3-31ef-4233-b871-10111bd90772"},
+    {t:"Nolte Spa – Product Guide 2026", img:IMG + "pg-nolte-spa-2026.jpg", id:"79eec543-ee4c-40c3-929b-145eff09c50f"}
+  ]},
+  "front-codes": {items: [
+    {t:"Nolte Küchen – Front Codes 2027", img:IMG + "fc-nolte.jpg", id:"6b117873-6e39-455d-9a3d-85891d6260dc"},
+    {t:"Express Küchen – Programmes & Fronts", img:IMG + "fc-express.jpg", id:"fabf3a14-80c3-4b0d-b5f4-4caaea51246b"},
+    {t:"Nolte neo – Journal 2026", img:IMG + "fc-neo.jpg", id:"5da5b1c0-ae9f-4222-9cc6-39539fe534d8"}
+  ]},
+  "spare-parts": {items: [
+    {t:"Nolte Küchen – Spare Parts 2024", img:IMG + "sp-nolte.jpg", id:"e835f04d-65ce-4fa0-88f6-407def3a1949"},
+    {t:"Express Küchen – Spare Parts 2026", img:IMG + "sp-express.jpg", id:"cd40cf6f-c8c5-4b74-ace9-6f15fe5402ea"}
+  ]},
+  "pos-marketing": {items: [
+    {t:"Nolte – POS Material 2026", img:IMG + "pos-nolte-2026.jpg", id:"2a8469db-ac81-4629-8ee3-ae7e8c1c8034"},
+    {t:"Express – Sample Order Form 2026", img:IMG + "pos-express-form-2026.jpg", id:"6d0ca3e0-75fd-4ec8-8811-f2c04c03748c"}
+  ]},
+  "installation-manuals": {cols:4, list:"manuals", items: [
+    {t:"Matrix Art – Installation Guide", id:"90c80c02-2ad3-426c-a6ee-196a217b429b"},
+    {t:"Nolte Neo – Installation Guide", id:"8f055e78-8e10-498d-898e-8a1803f9e90c"},
+    {t:"Pocket Doors – Installation Guide", id:"0acde956-5f85-45e5-96bb-6674b3310432"},
+    {t:"Sink and Hob – Installation Guide", id:"07aa2eb9-4ec2-437f-8123-06a10b250278"},
+    {t:"UEK ES-75-D – Installation Guide", id:"7cfeec0d-3b24-47ac-8df9-23224f76d36d"},
+    {t:"UERK 90 – Mounting Instructions", id:"8fe99db6-224b-4ec0-8d0c-a262f54597d3"}
+  ]},
+  "technical-drawings": {cols:4, list:"drawings", groups:["Base Unit","Wall Unit","Tall Unit","Accessories & Details"], search:true, items: [
+    ["f5d36979a4b1413b9e4e7450cdedef81","DSS20-350 – Accessories & Details"],
+    ["bb5ea93a97b248f48ad406de7fb2e375","GBBA195-3-1 – Tall Unit"],
+    ["5b4b8e8d328d496692bdcc26ee9cee2e","GB195-3 – Tall Unit"],
+    ["ba91720252104537b5e2bfbc1f5fd88f","GK195-179 – Tall Unit"],
+    ["1b43ba6b8c1543788fe4a5b12b16767d","GKA195-88 – Tall Unit"],
+    ["9b9519a9f1dd454ab7c40797bd9e6a78","H 30 – Wall Unit"],
+    ["f02d636b01d24d61a065c7b0f5bfb197","GSBD-60 – Tall Unit"],
+    ["8238a1fe7015419584e9c083ca63984a","GKG210-178 – Tall Unit"],
+    ["14920bca4da94f27b0da57e3f159844c","H30-60 – Wall Unit"],
+    ["91d4f4e6688a4a9987dc5cd879c1aac3","H30-75 – Wall Unit"],
+    ["8ffcadfd495f44198c86cbd7e4a54ba1","H30-30 – Wall Unit"],
+    ["455f2cffd2b3426a99da480cd4b5ad4a","HA 30 [35, 40, 45, 50, 60]-60-60 – Wall Unit"],
+    ["4a3db334342c4212b1f9d3eee188d2bd","H80-75 – Wall Unit"],
+    ["bd47d3e424b8447599fc01b8b2e32e21","H45-60 + LUB-045-GL – Wall Unit"],
+    ["e141f81979694c3c9d5a5ad13933f894","HAJV60-115 – Wall Unit"],
+    ["2462d81c18aa4d5ead3c5d6a0bd8e9ec","HEK80-60 – Wall Unit"],
+    ["a48d3ddefc714acb91ba124858006df0","HES80-60 – Wall Unit"],
+    ["3a441fa3a4854cbfb6e7e4099f74e7c9","HEK90-90 – Wall Unit"],
+    ["42401a7d09444d65a7ffddaafd101b51","HE 80 - 75er Höhe - (L+R) – Wall Unit"],
+    ["5747fc6532fc4d8a80abd53f9ce2008d","HES80-75_Z6700 – Wall Unit"],
+    ["ca7d9a9850574a1ab13491079bae6c42","HG30-60 – Wall Unit"],
+    ["18187ac927204859bc9769d7751b4f91","HK80(90-100)-45 – Wall Unit"],
+    ["0de18f1441684679bf7206522eb5cb0e","HFK60-60 – Wall Unit"],
+    ["792785357fa14d6b9e277d71c0317901","HL60-60 – Wall Unit"],
+    ["0fb56e58fada45cfa77b7275361709e5","HP1-60 – Wall Unit"],
+    ["b4df27379b9c44e1b1742ea88dbaf980","HM50-60-399 – Wall Unit"],
+    ["9ac2b69ebacc402c9eaf1443b2ecce63","HP2-60 – Wall Unit"],
+    ["0204e18c971a4b7e98a0327bd79a376f","HKDF90-45 + H90-45 – Wall Unit"],
+    ["0631d16daad94f3c97be502bc52c0f5c","HR30-60-V-L or R – Wall Unit"],
+    ["3d21d795f1cf4abc89f392a4f6c7cb10","HUK 30 [40, 45, 50,60] – Wall Unit"],
+    ["f6e42612ede74838aa1991fb94056e82","HVGF 80 – Wall Unit"],
+    ["b6d82ba126194ab38c80a3f23f61ff84","HRALU – Wall Unit"],
+    ["9aca958a24df4c55b10c20df047f6dbc","HWU60-75 – Wall Unit"],
+    ["7dd42afbc48a4d6ea1b76a0fd407b2ca","HWU 60 – Wall Unit"],
+    ["bf1bfc49ccc0491aa753b3ef9bbd263e","HWU60-105-5 – Wall Unit"],
+    ["fc0a0e7c22194cfb9c93a833242bd254","HWU60-105-7 – Wall Unit"],
+    ["5b28d3b84a4a414b86d5eaf986af741a","HWU60-105-11 – Wall Unit"],
+    ["c851730dccde4928979be0a012d04a6f","HWU60-105-13 – Wall Unit"],
+    ["5e6fa47bc8df4812824b6af79a6166ab","HWU60-105-18 – Wall Unit"],
+    ["255ce33c421d41acb052765896113816","HWU90-45-7-60 – Wall Unit"],
+    ["c112832066214aea9916e634e847b329","HWU90-75-7-60 – Wall Unit"],
+    ["bbab8e3540bc483fbb6cc4fb12ebec3d","HWU60-105-20 – Wall Unit"],
+    ["6194f32b4c4d460e87024b19f742ee8b","K60 – Accessories & Details"],
+    ["e99b896c780649c7837e6531c01bbe4e","KIHD5-90 (2) – Accessories & Details"],
+    ["c1de0cdd4d4c4abbba3cc64f246098ba","KIHD5-90 – Accessories & Details"],
+    ["95dd532c76ed4d338efaf1ed7e21f01a","KIHD5-90_DE_00_001 – Accessories & Details"],
+    ["c0424b9806314afdba9fa496d3e75846","KSA60 – Accessories & Details"],
+    ["d9f51bba5fd547a2bc06e1d8869e7fef","KM60-450 – Accessories & Details"],
+    ["244fa9717d194a5e87e570c5d33cc506","KZEO-8-90 – Accessories & Details"],
+    ["5387fe844b0649d5812fcc10d2fdd87e","HWU (VARAITIES) – Wall Unit"],
+    ["1c97bf782e804d77b43d0e2f246f2a26","MA_Regalsystem_Smartcube – Accessories & Details"],
+    ["12add499a8b640c2aff31a0a6c2884b6","NK_ H...AQUA_ 2016 – Wall Unit"],
+    ["c992d359e8a4463ab473d44d77e0bc9e","MWT 127x 195 – Accessories & Details"],
+    ["924b5cde22d74ce9b290ef3052cfdcc0","Objekt Fronten Burj Al Salam – Accessories & Details"],
+    ["e23e8c160a3642f78489fec2eb7dfd90","NK_ UDD... GASCYL_ 2016 – Base Unit"],
+    ["29ebae1cf3304f009413cf043b5c035f","RVF-K75 – Accessories & Details"],
+    ["13f065c9a9c8421ba6225148103acbfa","SOD 45 (50,60)-60 – Accessories & Details"],
+    ["da629eba6693478db6e91854fafc8472","SFUDI75-60-60-5 – Base Unit"],
+    ["c4096fa292e846f996529b4ffe7117e8","SOD45 – Accessories & Details"],
+    ["8ecd0b95689a493ca702559d839ccd63","SOD80 – Accessories & Details"],
+    ["6f0ed49d60a5450bbf91dcfc10292027","Regalmodul 1200x300 – Accessories & Details"],
+    ["b21898f43d694b178133de1efac83074","SP1-195 – Accessories & Details"],
+    ["6b7d3c3e87a84d19ae536994af1ab1b6","SZ – Accessories & Details"],
+    ["37547c34e601489f8a4b4ad90fdd5b71","TRIM HANDLE FIXING DETAILS – Accessories & Details"],
+    ["d06e39315edb4a158c9b3de3bfb3570c","U30 – Base Unit"],
+    ["c35069d4efc14ecf87d7ec1cf10f4175","UAK30 – Base Unit"],
+    ["3d0a3cb2003c4d00a15b3b092a04aa2b","UAK 30 – Base Unit"],
+    ["a709452bea8e420aa63f17547b9a5802","UAK80-45-60 – Base Unit"],
+    ["41a0512a7e8e4c608b89c0ad381befff","UATD 30-60 – Base Unit"],
+    ["ea8db884be78400ead12c9de6ddd8cd2","UBKOD – Base Unit"],
+    ["b1ed3349ba4143b185929f2b2b8349fa","Technical Details HWUL90-60 – Wall Unit"],
+    ["b16e3669266e46f6b1c5e15d2cf8508d","UDD 80 – Base Unit"],
+    ["894fc504d89143e6a599c33f406b3a2b","UDD 30 – Base Unit"],
+    ["63cd378125b247d1a76aae04128668bf","UDD30 – Base Unit"],
+    ["1177822b596f403aae1a88091b57826e","UDD30-45-60 – Base Unit"],
+    ["f9237a89804e40a688980ad2666073ca","UDD30-60-60 – Base Unit"],
+    ["4c5b4c39ad644c2d9d9372ad3cd781d4","UDD30-60-39 – Base Unit"],
+    ["b9549bcfba7946d38bbb1cbedd0e8bb5","UDD80-60-60 – Base Unit"],
+    ["229c9999381c41feb2e9a269eeaf0399","UDD90-75-39-F – Base Unit"],
+    ["5a481c1390cd4538a271808c53f382b8","UDDV – Base Unit"],
+    ["b333ddef6da749af9876c899f154493e","UDDV2 – Base Unit"],
+    ["a6ba13ca15dd452897dfbb8813511164","UDD90-F – Base Unit"],
+    ["f750e4688f3641cc8c60df96a370bb5c","UEAD 115 - 65 – Base Unit"],
+    ["f90d86a4d24845279e16f639aad53e91","UEAD125-65 – Base Unit"],
+    ["3d63f0c5509f406790dc53ebcda58cd0","UEEAD125-65 – Base Unit"],
+    ["b2cc785e6c4b4e1f9249b5a4a05d282e","UELAD110-60-65 – Base Unit"],
+    ["b1b9aae79974422fbac7f0fc57d3ec8e","UEK 90 – Base Unit"],
+    ["883aa148cc8f4daab66c4834c434091a","UEPSZ125-65 – Base Unit"],
+    ["0cc6c72f60ad403f8d89d90d8c80990a","UH60 – Base Unit"],
+    ["89c66ee93e8c4c3ba7fac38f398f2253","UHS 60 – Base Unit"],
+    ["80e407d797d849ee98a0d94590aee2f3","UESAD110-65MS – Base Unit"],
+    ["e4e8a0d96c394b94806cf202b73dcb54","UESAD110-65 – Base Unit"],
+    ["3739aee9d83344699a792737113cd44c","UHSK60 – Base Unit"],
+    ["57667de04c5741d89b117c4dc72450a2","UP1 – Base Unit"],
+    ["001b9960500d4bfea5bf33d27dc7fe2d","UP1-MS – Base Unit"],
+    ["cc417a5d6ecd4c0a93485768dc0d3c71","USA30 – Base Unit"],
+    ["f9618994807e466d8cac426323a142e8","USA30-60-60 – Base Unit"],
+    ["9faad1afa81c4b619b572538d648b091","UVK30 – Base Unit"],
+    ["24afc02498ab422f93676f6ffbbceeb6","UZ60-75-50 – Base Unit"],
+    ["83ca5dcd38bf4feca2b5b76cb407f5ae","UZI30 – Base Unit"],
+    ["472c9de7a7764f7b9a8fc37376e6aef2","V(30-60)-195 – Tall Unit"],
+    ["d95b0d09190f452d9589044fcd0bf8cd","V60-195 – Tall Unit"],
+    ["753dcf43535142a5bbf035a6efe7d292","VB60-135 – Tall Unit"],
+    ["07d8f2c3192c4547b2cea589dce46452","VI60-195 – Tall Unit"],
+    ["625a57c1f4f349a886fb6ce88fbe506f","VVA40-195 – Tall Unit"],
+    ["78912f12ecf44157a4a1809ebf9ed834","VVK60-195 – Tall Unit"],
+    ["58d66fbfc37a4e449e19180643a56084","URALUV (2) – Base Unit"],
+    ["7645cd9cce7e4143b137cc7e5ad36576","YGB210-3 – Tall Unit"],
+    ["758ae1d007a0431b8f2f2e3904448e5f","URALUV – Base Unit"],
+    ["d2c26ab36f624c548f5d0cae69062721","YUEAD110-65 – Base Unit"],
+    ["c2f2084dc769420787a95b543bad8323","YSFUDI-75-75 – Base Unit"],
+    ["a0bc1e6f8d8d4180afc5b5b69bcc3ef6","YVT60-210 – Tall Unit"],
+    ["eeb078334204405ea762e4c3d9c690c2","YUEEAD125-65 – Base Unit"],
+    ["4d3bd56af9b749f789d44aa508c40e3a","YGK210-123 – Tall Unit"]
+  ]}
 };
 
+/* ---- build ---- */
 var key = (location.hash || "#product-guide").slice(1).split("&")[0];
-var cards = SETS[key] || [];
-var grid = document.getElementById("grid");
+var set = SETS[key] || {items: []};
+var cards = set.items.map(function(c){
+  if (Array.isArray(c)) {
+    var parts = c[1].split(" – "), grp = parts.length > 1 ? parts.pop() : "";
+    return {t: parts.join(" – "), sub: grp, grp: grp, id: gid(c[0]), list: set.list};
+  }
+  c.id = gid(c.id); c.list = set.list; return c;
+});
+if (set.groups) cards.sort(function(a, b){ return a.t.localeCompare(b.t, undefined, {numeric: true, sensitivity: "base"}); });
+document.documentElement.style.setProperty("--cols", set.cols || 3);
+
+var grid = document.getElementById("grid"), empty = document.getElementById("empty");
 var arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+
+// Lazy-load the first-page previews so 100+ cards don't all load at once.
+var io = "IntersectionObserver" in window ? new IntersectionObserver(function(es){
+  es.forEach(function(e){ if (e.isIntersecting) { var el = e.target; el.style.backgroundImage = "url('" + el.getAttribute("data-bg") + "')"; io.unobserve(el); } });
+}, {root: document.getElementById("scroll"), rootMargin: "300px"}) : null;
 
 cards.forEach(function(c){
   var b = document.createElement("button");
   b.className = "card"; b.type = "button";
-  var im = document.createElement("div"); im.className = "img"; im.style.backgroundImage = "url('" + c.img.replace(/'/g, "%27") + "')";
-  var bd = document.createElement("div"); bd.className = "body"; bd.textContent = c.t; bd.insertAdjacentHTML("beforeend", arrow);
+  var im = document.createElement("div");
+  var src = c.img || (c.list ? thumb(c.list, c.id) : "");
+  im.className = "img" + (c.img ? "" : " doc");
+  if (!c.img) { var tg = document.createElement("span"); tg.className = "tag"; tg.textContent = "PDF"; im.appendChild(tg); }
+  if (src) { src = src.replace(/'/g, "%27"); if (io) { im.setAttribute("data-bg", src); io.observe(im); } else im.style.backgroundImage = "url('" + src + "')"; }
+  var bd = document.createElement("div"); bd.className = "body"; bd.textContent = c.t;
+  if (c.sub) { var s = document.createElement("small"); s.textContent = c.sub; bd.appendChild(s); }
+  bd.insertAdjacentHTML("beforeend", arrow);
   b.appendChild(im); b.appendChild(bd);
   b.addEventListener("click", function(){ openDoc(c); });
+  c.el = b; c.key = (c.t + " " + (c.sub || "")).toLowerCase().replace(/[\s\-_.()\[\],+]/g, "");
   grid.appendChild(b);
 });
 
-var ov = document.getElementById("ov"), fr = document.getElementById("fr"), lastCard = null;
+/* ---- tabs + search (only for big sets) ---- */
+var curGroup = "", q = document.getElementById("q");
+if (set.groups || set.search) {
+  document.getElementById("tools").classList.add("on");
+  var tabs = document.getElementById("tabs");
+  var names = [""].concat(set.groups || []);
+  names.forEach(function(g, i){
+    var n = cards.filter(function(c){ return !g || c.grp === g; }).length;
+    var t = document.createElement("button");
+    t.type = "button"; t.setAttribute("role", "tab");
+    t.innerHTML = (g ? g + "s" : "All").replace("Detailss", "Details") + '<span class="n">' + n + "</span>";
+    if (i === 0) t.classList.add("on");
+    t.addEventListener("click", function(){
+      tabs.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+      t.classList.add("on"); curGroup = g; filter();
+    });
+    tabs.appendChild(t);
+  });
+  q.addEventListener("input", filter);
+}
+function filter(){
+  var s = q.value.toLowerCase().replace(/[\s\-_.()\[\],+]/g, ""), shown = 0;
+  cards.forEach(function(c){
+    var ok = (!curGroup || c.grp === curGroup) && (!s || c.key.indexOf(s) >= 0);
+    c.el.style.display = ok ? "" : "none"; if (ok) shown++;
+  });
+  empty.style.display = shown ? "none" : "block";
+  document.getElementById("scroll").scrollTop = 0;
+}
 
-function fileUrl(f){ return SITE + f.split("/").map(encodeURIComponent).join("/"); }
+/* ---- viewer ---- */
+var ov = document.getElementById("ov"), fr = document.getElementById("fr"), lastCard = null;
 
 function openDoc(c){
   lastCard = document.activeElement;
-  document.getElementById("ovt").textContent = c.t;
-  document.getElementById("dl").href = fileUrl(c.f) + "?download=1";
+  document.getElementById("ovt").textContent = c.t + (c.sub ? " – " + c.sub : "");
+  document.getElementById("dl").href = SITE + "/_layouts/15/download.aspx?UniqueId=" + c.id;
   fr.src = SITE + "/_layouts/15/embed.aspx?UniqueId=" + c.id;
   ov.classList.add("open");
   var el = document.documentElement;
