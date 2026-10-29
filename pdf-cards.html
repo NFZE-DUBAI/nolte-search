@@ -232,7 +232,23 @@ var SETS = {
     ["4d3bd56af9b749f789d44aa508c40e3a","YGK210-123 – Tall Unit"]
   ]},
   "catalogues": {items: [], empty:"Catalogues will be added here soon."},
-  "certificates": {items: [], empty:"Certificates will be added here soon."},
+  "certificates": {cols:4, list:"docs", groups:["Nolte Küchen","Express Küchen","General"], noPlural:true, keepOrder:true, ph:"Search certificates, e.g. ISO 9001", items: [
+    ["b07e6b81941e4d498bd5477be7f7c279","ISO 9001:2015 Quality Management Certificate – Nolte Küchen"],
+    ["c91034415fe241ba8c9c163f4e7fd9e5","ISO 9001:2015 Certificate – Annex (Locations) – Nolte Küchen"],
+    ["6c4fcb69d0864d5dbe3e2a89c896e484","ISO 50001:2018 Energy Management Certificate – Nolte Küchen"],
+    ["7bb4e740d96b4117bfca0dfb014ea817","ISO 50001:2018 Certificate – Annex (Locations) – Nolte Küchen"],
+    ["e561681559d9483e87281d1519107185","FSC Chain of Custody Certificate (valid until 08/2028) – Nolte Küchen"],
+    ["7def04e7876f48aaad43f9881e6b974f","PEFC Chain of Custody Certificate (valid until 09/2028) – Nolte Küchen"],
+    ["84607787a8dd418a8794b78e28827359","100% Green Electricity – RenewablePLUS – Nolte Küchen"],
+    ["0f336ce36ac14f9d858e8afba0314a42","TOP Training Company (Top-Ausbilder) – Nolte Küchen"],
+    ["6f1f6e420c614b1bb3ae4817281cfe9b","ISO 9001:2015 Quality Management Certificate – Express Küchen"],
+    ["a49e8d9c147c4d729413eff37b132020","TÜV GS Safety Certificate – System 15 & SystemLine – Express Küchen"],
+    ["145d86ea78214982a2944a9e22a07252","DGM Quality & Test Requirements (RAL Quality Mark) – Express Küchen"],
+    ["316e182cf1b643c68263fbf4f842caa3","DGM Climate Pact Certificate – Express Küchen"],
+    ["2b81270dbcec46229163e55306771ac3","FSC Chain of Custody Certificate 2022–2026 – Express Küchen"],
+    ["b82b20a75cd542b1897f40e5f89c1eb4","Certification Logos Overview – General"],
+    ["82f67477265646fda8a151974eecee0f","Novisys 8848i Hinges – Test Report – General"]
+  ]},
   "installation-videos": {cols:4, list:"videos", tag:"VIDEO", search:true, ph:"Search videos, e.g. plinth", items: [
     ["52ec4542d38344a29239ca814242211b","Dismantling of Doors"],
     ["f527dcf93a674aaa93706f0a0de6186f","Fixing of Plinth Foot"],
@@ -325,7 +341,7 @@ var cards = set.items.map(function(c){
   }
   c.id = gid(c.id); c.list = set.list; return c;
 });
-if (set.groups) cards.sort(function(a, b){ return a.t.localeCompare(b.t, undefined, {numeric: true, sensitivity: "base"}); });
+if (set.groups && !set.keepOrder) cards.sort(function(a, b){ return a.t.localeCompare(b.t, undefined, {numeric: true, sensitivity: "base"}); });
 document.documentElement.style.setProperty("--cols", set.cols || 3);
 
 var grid = document.getElementById("grid"), empty = document.getElementById("empty");
@@ -364,7 +380,7 @@ if (set.groups || set.search) {
     var n = cards.filter(function(c){ return !g || c.grp === g; }).length;
     var t = document.createElement("button");
     t.type = "button"; t.setAttribute("role", "tab");
-    t.innerHTML = (g ? g + "s" : "All").replace("Detailss", "Details") + '<span class="n">' + n + "</span>";
+    t.innerHTML = (g ? (set.noPlural ? g : g + "s") : "All").replace("Detailss", "Details") + '<span class="n">' + n + "</span>";
     if (i === 0) t.classList.add("on");
     t.addEventListener("click", function(){
       tabs.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
