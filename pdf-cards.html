@@ -278,7 +278,37 @@ var SETS = {
     ["74302c7b9f604b9c8b346e0822e145c8","Heavy Duty Wall Bracket"],
     ["5b53c49eb81e4871b5de0317a07053eb","Fluted Wood Door Fronts"],
     ["a1da81ea07c646d0958f6046f9b4dd87","Fixing of Built-In Fridge Freezer"],
-    ["0921a46b681f4247815e745dd1f05f0d","Lemans Corner Mechanism"]
+    ["0921a46b681f4247815e745dd1f05f0d","Lemans Corner Mechanism"],
+    ["e8a7f0eda6c14d1ba8b6759a910498a9","Adjustment of the Back Plinth Foot (Part 2)"],
+    ["b2e5f0cb5b0d40fbb76babbe118b5408","Aligning of Cabinets"],
+    ["1051b25bcf644630b25db0ffa33bd9bb","Buffet Cabinet Opening Angle and Hinges"],
+    ["150cad0345dc40c1b1e52a9d7716a239","Buffet Unit with Base Unit Below"],
+    ["4ceba4fc8f0545fba249bb73f639d4ca","RVF Installation"],
+    ["d990f2f204394c31903753342ffcd24f","Panel Protector for RVF"],
+    ["3c5ab73807cd484993e13a47aa815dea","Hardwares (Part 1)"],
+    ["3ea3d6491ef74dadbb5a44c53cf3e03e","3MTR LUL (Part 1)"],
+    ["51a95267500e49b7b6202024b961c362","(HE) Wall Corner Unit"],
+    ["38c9f9c288d743dea4c3105551740773","Nolte Neo / Matrix Zero – Push to Open Mechanism"],
+    ["cc2e3b0904fa4663801fd748468e2c2a","RFD Fitting"],
+    ["3bcb9cf2c930495baa1c8385f6d8785e","New LED – EMO LUL"],
+    ["1f024ca43f4743ea8f152b0a68524330","Planning Side Panels with 22mm Door Fronts (RFD)"],
+    ["f457de2893ce4353bd6dc8f3930e3fbe","Plinth Leg Fitting"],
+    ["51be779920b04017a4063546f1133e11","Tall Unit Dresser – Showroom Solution"],
+    ["d2633133a25d420499f4e27b979e0107","UPE Corner Filler"],
+    ["af11e5179240433388d928971874bc7f","Unit Packaging – Accessory Box & Corner Base Unit Filler"],
+    ["fe8e2eaa5eae4100b12af5cc6fefe6c5","YPC LED"],
+    ["90d458be4f404e3a90770066b1429292","Wall Panel"],
+    ["64d48a1b081d451a81bf66c2047e0463","YPC LED – Cable Length"],
+    ["20d03bcc345e4e11b4d0d286206a3d9b","WSTB 25 with LED"],
+    ["5d72ede3e59044989855340292bb0368","YPC Carcase Cutout"],
+    ["19ed113f7b664af0b214749946ea85e1","YPC Vertical Profile"],
+    ["1433b2e03de746ed9f459039474e1a20","YPC Vertical Profile – Installation"],
+    ["6cfceaf42850476bbfabc6e87e7c2cb1","Accessory Box – Horizontal Handle Profiles"],
+    ["6d89eabaf06246ca8a6041a80b88994d","Horizontal Recess Handle Profile with LED"],
+    ["9b04533c73af4d0eb40c88561696ab69","Matrix 800 / Matrix Art – Dishwasher Recess Handle Profile with LED"],
+    ["53fe714269e74b72a947a206e594a032","Wall Unit Installation – Hanging Mechanism"],
+    ["94747694fe02422f98b1614482440faf","SES Set – Plinth Shifted Inwards"],
+    ["e28fb16505054e6196cba08cfee52239","Wall Unit BGL LUL"]
   ]}
 };
 
@@ -287,7 +317,7 @@ var key = (location.hash || "#product-guide").slice(1).split("&")[0];
 var set = SETS[key] || {items: []};
 var cards = set.items.map(function(c){
   if (Array.isArray(c)) {
-    var parts = c[1].split(" – "), grp = parts.length > 1 ? parts.pop() : "";
+    var parts = c[1].split(" – "), grp = (set.groups && parts.length > 1) ? parts.pop() : "";
     return {t: parts.join(" – "), sub: grp, grp: grp, id: gid(c[0]), list: set.list};
   }
   c.id = gid(c.id); c.list = set.list; return c;
