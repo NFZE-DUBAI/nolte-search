@@ -28,7 +28,7 @@ button.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:translateY(-2p
 button.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 .img{position:relative;aspect-ratio:16/10;background:#eee center/cover no-repeat}
 .img.doc{background-color:#fff;background-size:contain;border-bottom:1px solid var(--line)}
-.img .tag{position:absolute;left:8px;bottom:8px;background:#c62828;color:#fff;font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 5px;border-radius:3px}
+.img .tag{position:absolute;z-index:1;left:8px;bottom:8px;background:#c62828;color:#fff;font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 5px;border-radius:3px}
 .body{position:relative;padding:12px 40px 14px 14px;font-size:14px;font-weight:600;line-height:1.35}
 .body svg{position:absolute;right:12px;top:50%;margin-top:-8px;width:16px;height:16px;color:#333}
 .body small{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:3px}
@@ -75,7 +75,8 @@ var SITE_IDS = "noltefze.sharepoint.com,454a4b7f-cf38-4b2c-8434-b48a779f0950,fff
 var LIST = {
   docs: "b13c4dbe-ab0a-49f8-b0da-fe259162bf4f",
   manuals: "09983e13-0dd2-4a82-972c-b7055a2a75d3",
-  drawings: "9666b171-9ea8-4d36-b3c2-d46b04c1a59c"
+  drawings: "9666b171-9ea8-4d36-b3c2-d46b04c1a59c",
+  videos: "390d7681-54da-418c-8d7a-fdc83a8d1b55"
 };
 function thumb(list, id){ return SITE + "/_api/v2.1/sites/" + SITE_IDS + "/lists/" + LIST[list] + "/items/" + id + "/driveItem/thumbnails/0/c800x600/content"; }
 function gid(h){ return h.length === 32 ? h.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, "$1-$2-$3-$4-$5") : h; }
@@ -228,6 +229,56 @@ var SETS = {
     ["a0bc1e6f8d8d4180afc5b5b69bcc3ef6","YVT60-210 – Tall Unit"],
     ["eeb078334204405ea762e4c3d9c690c2","YUEEAD125-65 – Base Unit"],
     ["4d3bd56af9b749f789d44aa508c40e3a","YGK210-123 – Tall Unit"]
+  ]},
+  "installation-videos": {cols:4, list:"videos", tag:"VIDEO", search:true, ph:"Search videos, e.g. plinth", items: [
+    ["52ec4542d38344a29239ca814242211b","Dismantling of Doors"],
+    ["f527dcf93a674aaa93706f0a0de6186f","Fixing of Plinth Foot"],
+    ["22fe5dba9773475594ca41e27acfedd2","Testing of Nolte Logo Light for Units"],
+    ["9b86a50b1444440aac98f27d88b95f40","Unloading"],
+    ["5616e9d8a50d49ccbbc2db37481dd88d","Unpacking Cabinet"],
+    ["9dac075e33c649dfa3ff1df0d1638d97","Wall Unit Flap Door Opening Angle Adjustment"],
+    ["56fcd83f904840cab554b485400dbe0b","Grey Plinth Foot Adapters (Part 1)"],
+    ["741b429ffb1a45ba9151d8fd1a1eb7f2","Lemans Corner Mechanism (Part 2)"],
+    ["4c38f2b9d43d46ff86d38e77df2e5509","Panel Floor Protector"],
+    ["3f153ff5c0c84b689137f854130cebd7","Tall Unit Filler Panel"],
+    ["6c30789daf7048bf85bb2e16fcf379c8","Grey Plinth Foot Adapters (Part 2)"],
+    ["71228104ed7d48259647e83deaf276d6","Removing the Lemans Tray (Part 2)"],
+    ["351ea7182bfe49178dd1fa6a62882d77","Egger Sample Wall"],
+    ["b1139eed5001490f978aa92e259af267","Lacq Bubble Wrap Packing"],
+    ["8d44721d09844c439c9812111e80d6ed","IMI Innovation (Part 3)"],
+    ["dc752a3f2d3e4379b96404bc224a082f","Organisation of Installation Site"],
+    ["dcde03dcbeb54fe89212822981942d9f","Tool Kits"],
+    ["847cdef887de457ca68b2d8c5d920d82","Ventilation Grill"],
+    ["1d0af9d7a50a4b6d88dede743286b76f","Tall Filler Panel Fixing"],
+    ["1d018e5e7f66495ebc10a7aed02e341d","IMI Innovation (Part 1)"],
+    ["228c37a209914beb84a1f3e372913f10","Hinge Limited Wall Unit"],
+    ["f334a26a77b44dbebf74d1461d83b844","Marking for Side Plinth Cutting"],
+    ["d607b30fad21444584531e13604fa6fc","Tall Filler Panel Fixing (Part 3)"],
+    ["a26300cbebd24d139f553080b366f570","IMI Innovation (Part 2)"],
+    ["cd78ac1113e441f7ac034771ec3868f1","Cutting of Filler Panel"],
+    ["0de94ddbc5964ec890e9f31297c522bc","Hinge Limiter Application"],
+    ["82595384f650455e8be4b8a237cb19f1","Installation Technique for Side Panels"],
+    ["56889d6b11b84a3b908c3ca637b9fafc","Removing the Lemans Tray (Part 1)"],
+    ["f2ef10716c524d71895fc3427838ca93","Neo Box"],
+    ["7c652bc7bb454d13af566ee9651799e6","Fixing 2 Cabinets with Screws (Part 2)"],
+    ["9215fb5a0e0440cc9eae2d410cb77782","Fixing of Plinth Clips to Adapters"],
+    ["3f94ac8a9bd34da8a2964d79ea1a3856","Hardware Fixing for RVF"],
+    ["740659d9f51243c09610de240679d85b","Yp-C"],
+    ["a14bd9399561481b89d23b8b0af7e524","Fluted Front SFUDI"],
+    ["c4688d412baf47438ee7b58465dda5c5","Unpacking Cabinet (Part 2)"],
+    ["680f7a516f644f249eedfa8e5a30db4d","Spa Concept"],
+    ["9405f3f9e1e34161835d91514ff6dcc3","Fixing of Built in Fridge Freezer (Part 2)"],
+    ["032b8e4da17144edbac468040708b5dd","Connecting Light to SMK Converter"],
+    ["457a2075e40f4b1cafa2742ac9b50369","Fixing of Base Corner Filler"],
+    ["962da33666d34f5a8e258be85c7bb4e1","On Site Filler Cutting"],
+    ["0305bd5c41404350ae7bdf4462b82d5a","Fixing 2 Cabinets with Screws (Part 1)"],
+    ["16af745c70524c089bb3546435fa5600","Installation Adapter (Part 1)"],
+    ["bc0539effac6467dbd517731c88b533b","Pullout 40kg Channels"],
+    ["15770778d00c4bbbbc7e2746481c1019","Hardwares (Part 2)"],
+    ["74302c7b9f604b9c8b346e0822e145c8","Heavy Duty Wall Bracket"],
+    ["5b53c49eb81e4871b5de0317a07053eb","Fluted Wood Door Fronts"],
+    ["a1da81ea07c646d0958f6046f9b4dd87","Fixing of Built-In Fridge Freezer"],
+    ["0921a46b681f4247815e745dd1f05f0d","Lemans Corner Mechanism"]
   ]}
 };
 
@@ -258,7 +309,7 @@ cards.forEach(function(c){
   var im = document.createElement("div");
   var src = c.img || (c.list ? thumb(c.list, c.id) : "");
   im.className = "img" + (c.img ? "" : " doc");
-  if (!c.img) { var tg = document.createElement("span"); tg.className = "tag"; tg.textContent = "PDF"; im.appendChild(tg); }
+  if (!c.img) { var tg = document.createElement("span"); tg.className = "tag"; tg.textContent = set.tag || "PDF"; im.appendChild(tg); }
   if (src) { src = src.replace(/'/g, "%27"); if (io) { im.setAttribute("data-bg", src); io.observe(im); } else im.style.backgroundImage = "url('" + src + "')"; }
   var bd = document.createElement("div"); bd.className = "body"; bd.textContent = c.t;
   if (c.sub) { var s = document.createElement("small"); s.textContent = c.sub; bd.appendChild(s); }
@@ -287,6 +338,8 @@ if (set.groups || set.search) {
     });
     tabs.appendChild(t);
   });
+  if (set.ph) q.placeholder = set.ph;
+  if (!set.groups) tabs.style.display = "none";
   q.addEventListener("input", filter);
 }
 function filter(){
