@@ -23,6 +23,7 @@ body{overflow:hidden;display:flex;flex-direction:column}
 .scroll{flex:1 1 auto;overflow:auto;padding:2px 4px 8px 2px}
 .grid{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:16px}
 .empty{display:none;padding:30px 4px;color:var(--muted);font-size:14px}
+.empty.box{border:1px dashed #cfcfcf;border-radius:6px;text-align:center;padding:40px 16px;background:#fafafa}
 button.card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .15s}
 button.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:translateY(-2px)}
 button.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
@@ -230,6 +231,8 @@ var SETS = {
     ["eeb078334204405ea762e4c3d9c690c2","YUEEAD125-65 – Base Unit"],
     ["4d3bd56af9b749f789d44aa508c40e3a","YGK210-123 – Tall Unit"]
   ]},
+  "catalogues": {items: [], empty:"Catalogues will be added here soon."},
+  "certificates": {items: [], empty:"Certificates will be added here soon."},
   "installation-videos": {cols:4, list:"videos", tag:"VIDEO", search:true, ph:"Search videos, e.g. plinth", items: [
     ["52ec4542d38344a29239ca814242211b","Dismantling of Doors"],
     ["f527dcf93a674aaa93706f0a0de6186f","Fixing of Plinth Foot"],
@@ -350,6 +353,7 @@ cards.forEach(function(c){
   grid.appendChild(b);
 });
 
+if (!cards.length) { empty.textContent = set.empty || "No documents yet."; empty.classList.add("box"); empty.style.display = "block"; }
 /* ---- tabs + search (only for big sets) ---- */
 var curGroup = "", q = document.getElementById("q");
 if (set.groups || set.search) {

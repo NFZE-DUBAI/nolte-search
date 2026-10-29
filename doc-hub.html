@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product Documentation</title>
+<style>
+:root{--yellow:#FFD100;--ink:#1f1f1f;--muted:#6b6b6b;--line:#e6e6e6}
+*{box-sizing:border-box}
+html,body{margin:0;overflow:hidden;background:#fff;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:2px}
+a.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .15s}
+a.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:translateY(-2px)}
+a.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.top{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#2b2b2b 0%,#151515 100%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--yellow)}
+.top .big{width:60px;height:60px;color:var(--yellow);transition:transform .2s}
+a.card:hover .big{transform:scale(1.08)}
+.top .lbl{position:absolute;left:14px;top:12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#bdbdbd;font-weight:600}
+.body{position:relative;flex:1;padding:12px 12px 28px}
+.t{font-size:15px;font-weight:600;line-height:1.3}
+.d{font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px}
+.arr{position:absolute;right:12px;bottom:8px;width:16px;height:16px;color:#333}
+@media (max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="grid">
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Product-Guide.aspx">
+<div class="top"><span class="lbl">Documents</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2"/><path d="M20 19v3H6"/><path d="M9 7h7M9 11h5"/></svg></div>
+<div class="body"><div class="t">Product Guides</div><div class="d">Full Nolte Küchen, Express Küchen and Nolte Spa product ranges, models and options.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Spare-Parts.aspx">
+<div class="top"><span class="lbl">Documents</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+<div class="body"><div class="t">Spare Parts</div><div class="d">Spare parts manuals with part numbers for ordering replacements.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Catalogues.aspx">
+<div class="top"><span class="lbl">Documents</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></div>
+<div class="body"><div class="t">Catalogues</div><div class="d">Brand catalogues and brochures for presenting kitchens to customers.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Certificates.aspx">
+<div class="top"><span class="lbl">Documents</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="m9 9 2 2 4-4"/><path d="M8.5 14.2 7 22l5-3 5 3-1.5-7.8"/></svg></div>
+<div class="body"><div class="t">Certificates</div><div class="d">Quality, environmental and product certificates for Nolte products.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+</div>
+</body>
+</html>
