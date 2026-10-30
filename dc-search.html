@@ -45,6 +45,13 @@ input::placeholder{color:#6b6b6b}
 <script>
 var SITE = "https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/Lists/";
 var list = "Discontinued%20Items%20%20Nolte";
+var fixed = (location.hash || "").slice(1).toLowerCase();
+if (fixed === "nolte" || fixed === "express") {
+  list = fixed === "nolte" ? "Discontinued%20Items%20%20Nolte" : "Discontinued%20Items%20%20Express";
+  document.querySelector(".brand").style.display = "none";
+  document.querySelector("h2").textContent = "Search " + (fixed === "nolte" ? "Nolte Küchen" : "Express Küchen") + " discontinued items";
+  document.querySelector("p").textContent = "Type a code or name (e.g. 675 or steel grey) and press Search. Use the filter icon in the list below to filter by status, product type and more.";
+}
 document.querySelectorAll(".brand button").forEach(function(b){
   b.addEventListener("click", function(){
     document.querySelectorAll(".brand button").forEach(function(x){ x.classList.remove("on"); x.setAttribute("aria-checked","false"); });
