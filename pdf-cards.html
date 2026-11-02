@@ -22,6 +22,10 @@ body{overflow:hidden;display:flex;flex-direction:column}
 .find svg{width:16px;height:16px;color:#666}
 .scroll{flex:1 1 auto;overflow:auto;padding:2px 4px 8px 2px}
 .grid{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:16px}
+.sec{grid-column:1/-1;display:flex;align-items:baseline;gap:8px;margin:14px 0 -2px;padding-bottom:6px;border-bottom:2px solid var(--yellow);font-size:16px;font-weight:700}
+.sec:first-child{margin-top:0}
+.sec .n{font-size:12px;font-weight:400;color:var(--muted)}
+.img .tag.yt{background:#ff0000}
 .empty{display:none;padding:30px 4px;color:var(--muted);font-size:14px}
 .empty.box{border:1px dashed #cfcfcf;border-radius:6px;text-align:center;padding:40px 16px;background:#fafafa}
 button.card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .15s}
@@ -253,7 +257,42 @@ var SETS = {
     ["b82b20a75cd542b1897f40e5f89c1eb4","Certification Logos Overview – General"],
     ["82f67477265646fda8a151974eecee0f","Novisys 8848i Hinges – Test Report – General"]
   ]},
-  "installation-videos": {cols:4, list:"videos", tag:"VIDEO", search:true, ph:"Search videos, e.g. plinth", items: [
+  "installation-videos": {cols:4, list:"videos", tag:"VIDEO", search:true, ph:"Search all installation videos, e.g. plinth, drawer, EMA",
+   ytTitle:"Nolte Küchen Montage – YouTube", mainTitle:"Installation Videos – Nolte FZE", yt: [
+    ["Sx8G9TOdrgY","Flap fittings in the wall unit (EMA)"],
+    ["JG0Tc1tzfPA","Setting the VDR glass showcase"],
+    ["X4R4bT2GMOs","EMA for refrigerators"],
+    ["luCjG7MTnZo","Premium Line drawer"],
+    ["Mr-T3BTIHTY","Pot hinge"],
+    ["9fGSbiCvx_8","EmoFunk converter"],
+    ["2ZdA-AX0AdU","Front replacement drawer & pull-out"],
+    ["tb2eG99a6oU","Hob cabinet stabilising bar"],
+    ["3xQxoZ54kDM","neoBox Push To Open function"],
+    ["-Yc5lL0BHZI","Flush-mounted hob installation"],
+    ["i2_rhZ5jMSw","Setting a scenery cabinet"],
+    ["v6e7GACgWS4","Adjustment of a wall cabinet"],
+    ["Ffv6CpguLFE","Cleaning the kitchen fronts"],
+    ["kHpnsyUhC-A","Clamping fitting hinged doors"],
+    ["D5kErKuagCA","Folding flap cabinet"],
+    ["wGvPC1v4O98","Cable channel"],
+    ["LRhAPtOJTMc","EMA for the sink base unit"],
+    ["ddBMuXRSFD8","Apothecary cabinet"],
+    ["zrACsYLBMp8","Sliding doors HR shelf"],
+    ["K04VSuXh41Q","Glass worktop"],
+    ["v8rTrWg9lNQ","Heavy-duty suspension fitting"],
+    ["SyqR-W4GxPg","Cable channel (Kabelkanal)"],
+    ["OsJVFa_qjd8","Flap fittings in the wall unit (EMA) – 2"],
+    ["CFmprRUC0Hg","EMA for refrigerators – 2"],
+    ["OzYbDFKk7WU","Premium Line drawer – 2"],
+    ["QBi2cz5v9jE","Pot hinge – 2"],
+    ["mAFzvaXkiuY","EMA for lift-up doors"],
+    ["Mb4K1-mfXl8","Installation Zigbee module"],
+    ["7j1zys1Dr3Q","nolteneo drawer"],
+    ["S0S0nFXA2qI","Lift-up door"],
+    ["CBxClq3DRGI","Rail system Motion Line"],
+    ["Xg1DkiZmxVc","Anti-tip safety"],
+    ["diTjCKPyiBg","LED drawer conversion"]
+  ], items: [
     ["52ec4542d38344a29239ca814242211b","Dismantling of Doors"],
     ["f527dcf93a674aaa93706f0a0de6186f","Fixing of Plinth Foot"],
     ["22fe5dba9773475594ca41e27acfedd2","Testing of Nolte Logo Light for Units"],
@@ -345,6 +384,10 @@ var cards = set.items.map(function(c){
   }
   c.id = gid(c.id); c.list = set.list; return c;
 });
+if (set.yt) {
+  cards.forEach(function(c){ c.sec = 2; });
+  cards = set.yt.map(function(v){ return {t: v[1], yt: v[0], img: "https://i.ytimg.com/vi/" + v[0] + "/hqdefault.jpg", tag: "YOUTUBE", sec: 1}; }).concat(cards);
+}
 if (set.groups && !set.keepOrder) cards.sort(function(a, b){ return a.t.localeCompare(b.t, undefined, {numeric: true, sensitivity: "base"}); });
 document.documentElement.style.setProperty("--cols", set.cols || 3);
 
@@ -356,13 +399,21 @@ var io = "IntersectionObserver" in window ? new IntersectionObserver(function(es
   es.forEach(function(e){ if (e.isIntersecting) { var el = e.target; el.style.backgroundImage = "url('" + el.getAttribute("data-bg") + "')"; io.unobserve(el); } });
 }, {root: document.getElementById("scroll"), rootMargin: "300px"}) : null;
 
+var lastSec = 0, secs = {};
 cards.forEach(function(c){
+  if (c.sec && c.sec !== lastSec) {
+    var h = document.createElement("div"); h.className = "sec";
+    h.textContent = c.sec === 1 ? set.ytTitle : set.mainTitle;
+    var hn = document.createElement("span"); hn.className = "n";
+    hn.textContent = cards.filter(function(x){ return x.sec === c.sec; }).length + " videos";
+    h.appendChild(hn); grid.appendChild(h); secs[c.sec] = h; lastSec = c.sec;
+  }
   var b = document.createElement("button");
   b.className = "card"; b.type = "button";
   var im = document.createElement("div");
   var src = c.img || (c.list ? thumb(c.list, c.id) : "");
   im.className = "img" + (c.img || set.tag ? "" : " doc");
-  if (!c.img) { var tg = document.createElement("span"); tg.className = "tag"; tg.textContent = set.tag || "PDF"; im.appendChild(tg); }
+  if (!c.img || c.tag) { var tg = document.createElement("span"); tg.className = "tag" + (c.yt ? " yt" : ""); tg.textContent = c.tag || set.tag || "PDF"; im.appendChild(tg); }
   if (src) { src = src.replace(/'/g, "%27"); if (io) { im.setAttribute("data-bg", src); io.observe(im); } else im.style.backgroundImage = "url('" + src + "')"; }
   var bd = document.createElement("div"); bd.className = "body"; bd.textContent = c.t;
   if (c.sub) { var s = document.createElement("small"); s.textContent = c.sub; bd.appendChild(s); }
@@ -402,6 +453,7 @@ function filter(){
     var ok = (!curGroup || c.grp === curGroup) && (!s || c.key.indexOf(s) >= 0);
     c.el.style.display = ok ? "" : "none"; if (ok) shown++;
   });
+  Object.keys(secs).forEach(function(k){ secs[k].style.display = cards.some(function(c){ return String(c.sec) === k && c.el.style.display !== "none"; }) ? "" : "none"; });
   empty.style.display = shown ? "none" : "block";
   document.getElementById("scroll").scrollTop = 0;
 }
@@ -412,8 +464,14 @@ var ov = document.getElementById("ov"), fr = document.getElementById("fr"), last
 function openDoc(c){
   lastCard = document.activeElement;
   document.getElementById("ovt").textContent = c.t + (c.sub ? " – " + c.sub : "");
-  document.getElementById("dl").href = SITE + "/_layouts/15/download.aspx?UniqueId=" + c.id;
-  fr.src = SITE + "/_layouts/15/embed.aspx?UniqueId=" + c.id;
+  document.querySelector("#dl .lbl").textContent = c.yt ? "Open in YouTube" : "Download";
+  if (c.yt) {
+    document.getElementById("dl").href = "https://www.youtube.com/watch?v=" + c.yt;
+    fr.src = "https://www.youtube-nocookie.com/embed/" + c.yt + "?autoplay=1&rel=0";
+  } else {
+    document.getElementById("dl").href = SITE + "/_layouts/15/download.aspx?UniqueId=" + c.id;
+    fr.src = SITE + "/_layouts/15/embed.aspx?UniqueId=" + c.id;
+  }
   ov.classList.add("open");
   var el = document.documentElement;
   var rq = el.requestFullscreen || el.webkitRequestFullscreen;
