@@ -34,6 +34,9 @@
     .d{grid-column:2;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .arr{position:static;grid-column:3;grid-row:1 / span 2}
   }
+
+/* ===== Mobile safety net: never cut content off, allow scrolling inside the Embed ===== */
+@media (max-width:700px){html,body{overflow-y:auto;-webkit-overflow-scrolling:touch}}
 </style>
 </head>
 <body>

@@ -18,6 +18,9 @@
   a.tile:focus-visible,.all:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
   svg.ico{flex:0 0 auto;width:28px;height:28px;color:#222}
   .t{font-size:14px;line-height:1.35}
+
+/* ===== Mobile safety net: never cut content off, allow scrolling inside the Embed ===== */
+@media (max-width:700px){html,body{overflow-y:auto;-webkit-overflow-scrolling:touch}}
 </style>
 </head>
 <body>

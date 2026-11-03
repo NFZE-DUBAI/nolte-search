@@ -24,6 +24,20 @@ input::placeholder{color:#6b6b6b}
 .go{flex:0 0 auto;border:0;border-radius:6px;background:var(--yellow);color:var(--ink);font:inherit;font-weight:600;font-size:15px;padding:10px 26px;cursor:pointer}
 .go:hover{background:#ffdd33}
 @media (max-width:600px){.box{padding:18px}.go{padding:10px 16px}}
+
+/* ===== Mobile: tighter search box so it fits the 185px Embed ===== */
+@media (max-width:700px){
+  html,body{overflow-y:auto}
+  .box{padding:12px 14px 14px}
+  h2{font-size:17px;margin:0 0 2px}
+  p{font-size:12px;margin:0 0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row{gap:8px}
+  .brand{padding:3px}
+  .brand button{padding:6px 12px;font-size:13px}
+  form{flex:1 1 100%;padding:3px 3px 3px 10px}
+  input{padding:7px 8px;font-size:14px}
+  .go{padding:8px 14px;font-size:14px}
+}
 </style>
 </head>
 <body>
