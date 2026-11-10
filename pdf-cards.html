@@ -93,6 +93,7 @@ var SITE_IDS = "noltefze.sharepoint.com,454a4b7f-cf38-4b2c-8434-b48a779f0950,fff
 var LIST = {
   docs: "b13c4dbe-ab0a-49f8-b0da-fe259162bf4f",
   manuals: "09983e13-0dd2-4a82-972c-b7055a2a75d3",
+  drawings: "9666b171-9ea8-4d36-b3c2-d46b04c1a59c",
   videos: "390d7681-54da-418c-8d7a-fdc83a8d1b55"
 };
 function thumb(list, id){ return SITE + "/_api/v2.1/sites/" + SITE_IDS + "/lists/" + LIST[list] + "/items/" + id + "/driveItem/thumbnails/0/c800x600/content"; }
@@ -136,6 +137,8 @@ var SETS = {
     {t:"Express Küchen – Journal 2026", id:"7d0657de-d01e-4ae3-b5b7-d7fdb3c0b303"},
     {t:"Nolte neo – Journal 2026", id:"4d7ef64a-26d2-4f6f-8d7f-c45e60f31ee7"}
   ]},
+  /* items are passed in by the Technical Drawings page itself (#technical-drawings&d=...), so no names are stored in this public file */
+  "technical-drawings": {cols:4, list:"drawings", groups:["Base Unit","Wall Unit","Tall Unit","Accessories & Details"], search:true, ph:"Search by code, e.g. UDD30", fromPage:true, items: []},
   "certificates": {cols:4, list:"docs", groups:["Nolte Küchen","Express Küchen","General","Lighting","Technical Data Sheets"], noPlural:true, keepOrder:true, ph:"Search, e.g. ISO 9001 or data sheet", items: [
     ["b07e6b81941e4d498bd5477be7f7c279","ISO 9001:2015 Quality Management Certificate – Nolte Küchen"],
     ["c91034415fe241ba8c9c163f4e7fd9e5","ISO 9001:2015 Certificate – Annex (Locations) – Nolte Küchen"],
@@ -277,8 +280,18 @@ var SETS = {
 };
 
 /* ---- build ---- */
-var key = (location.hash || "#product-guide").slice(1).split("&")[0];
+var hashParts = (location.hash || "#product-guide").slice(1).split("&");
+var key = hashParts[0];
 var set = SETS[key] || {items: []};
+if (set.fromPage) {
+  var dp = hashParts.filter(function(x){ return x.indexOf("d=") === 0; })[0];
+  if (dp) {
+    try {
+      var b64 = dp.slice(2).replace(/-/g, "+").replace(/_/g, "/");
+      set.items = JSON.parse(decodeURIComponent(escape(atob(b64))));
+    } catch (e) { set.items = []; }
+  }
+}
 var cards = set.items.map(function(c){
   if (Array.isArray(c)) {
     var parts = c[1].split(" – "), grp = (set.groups && parts.length > 1) ? parts.pop() : "";
