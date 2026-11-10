@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breadcrumb</title>
+<style>
+:root{--yellow:#FFD100;--ink:#1f1f1f;--muted:#6b6b6b;--line:#e6e6e6}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#fff;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+nav{height:100%;display:flex;align-items:center;gap:14px;padding:0 2px;min-width:0}
+a{color:inherit;text-decoration:none}
+.back{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 9px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:13px;font-weight:600;color:#222;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.back:hover{border-color:#bbb;background:#fafafa}
+.back:focus-visible,ol a:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.back svg{width:16px;height:16px}
+ol{list-style:none;margin:0;padding:0;display:flex;align-items:center;min-width:0;font-size:13px;color:var(--muted)}
+li{display:flex;align-items:center;min-width:0;white-space:nowrap}
+li+li::before{content:"";flex:0 0 auto;width:6px;height:6px;margin:0 10px;border-right:1.5px solid #9a9a9a;border-top:1.5px solid #9a9a9a;transform:rotate(45deg)}
+ol a{color:#444;border-bottom:1px solid transparent}
+ol a:hover{color:#000;border-bottom-color:var(--yellow)}
+li.cur{color:var(--ink);font-weight:600;overflow:hidden}
+li.cur span{overflow:hidden;text-overflow:ellipsis}
+.home{display:inline-flex;align-items:center;gap:5px}
+.home svg{width:15px;height:15px}
+li.dots{display:none}
+@media (max-width:600px){
+  nav{gap:10px}
+  .back span{display:none}
+  .back{padding:0 9px}
+  li.mid{display:none}           /* phone: Back + Home > ... > current page */
+  li.dots{display:flex}
+}
+</style>
+</head>
+<body>
+<nav aria-label="Breadcrumb">
+  <a class="back" id="back" target="_top" href="#" title="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg><span>Back</span></a>
+  <ol id="trail"></ol>
+</nav>
+<script>
+/* ---------------------------------------------------------------
+   PAGE MAP - one line per page:  "Page-File-Name": ["Label", "Parent-Page-File-Name"]
+   Add a new page here, then put this on the page as an Embed:
+   nav.html#Page-File-Name
+   --------------------------------------------------------------- */
+var SITE = "https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub";
+var PAGES = {
+  "TopicHome":                       ["Home", null],
+  "Product-Documentation":           ["Product Documentation", "TopicHome"],
+  "Product-Guide":                   ["Product Guides", "Product-Documentation"],
+  "Spare-Parts":                     ["Spare Parts", "Product-Documentation"],
+  "Catalogues":                      ["Catalogues", "Product-Documentation"],
+  "Certificates":                    ["Certificates", "Product-Documentation"],
+  "Discontinued-Items":              ["Discontinued Items", "Product-Documentation"],
+  "Discontinued-Items-Nolte":        ["Nolte Küchen", "Discontinued-Items"],
+  "Discontinued-Items-Express":      ["Express Küchen", "Discontinued-Items"],
+  "Front-Codes":                     ["Front Codes", "TopicHome"],
+  "Installation-Center":             ["Installation Center", "TopicHome"],
+  "Installation-Manuals":            ["Installation Manuals", "Installation-Center"],
+  "Installation-Videos":             ["Installation Videos", "Installation-Center"],
+  "POS-&-Marketing-Materials":       ["POS & Marketing Materials", "TopicHome"],
+  "News-&-Product-Updates":          ["Factory & Product Updates", "TopicHome"],
+  "ECO-Products-Discontinued-from-Week-27-2026": ["ECO Products Discontinued", "News-&-Product-Updates"],
+  "Stripe-Range-Discontinued":       ["Stripe Range Discontinued", "News-&-Product-Updates"],
+  "Installation-Training-in-Germany":["Installation Training in Germany", "News-&-Product-Updates"],
+  "Container-Max-Volume-Update--More-Space-for-Express-Küchen-Shipments": ["Container Max Volume Update", "News-&-Product-Updates"],
+  "Training-Center":                 ["Training Center", "TopicHome"],
+  "Planning-&-Design-Guidelines":    ["Design and Showroom Updates", "TopicHome"],
+  "Technical-Solutions-&-FAQ":       ["Technical Solutions & FAQ", "TopicHome"],
+  "Design-FAQ":                      ["Design FAQ", "Technical-Solutions-&-FAQ"],
+  "Technical-FAQ":                   ["Technical FAQ", "Technical-Solutions-&-FAQ"],
+  "Sales-FAQ":                       ["Sales FAQ", "Technical-Solutions-&-FAQ"],
+  "Logistics-FAQ":                   ["Logistics FAQ", "Technical-Solutions-&-FAQ"],
+  "Technical-Drawings":              ["Technical Drawings", "TopicHome"],
+  "Technical-Support-Center":        ["Technical Support Center", "TopicHome"],
+  "Product-Guide-&-Spare-Parts":     ["Product Guide & Spare Parts", "TopicHome"],
+  "Materials-&-Finishes":            ["Materials & Finishes", "TopicHome"],
+  "SOP-&-Processes":                 ["SOP & Processes", "TopicHome"],
+  "Partner-Support":                 ["Partner Support", "TopicHome"],
+  "About":                           ["About", "TopicHome"]
+};
+function url(k){ return k === "TopicHome" ? SITE : SITE + "/SitePages/" + encodeURIComponent(k).replace(/%2D/g, "-") + ".aspx"; }
+var homeIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/></svg>';
+
+var key = decodeURIComponent((location.hash || "").replace(/^#/, ""));
+if (!PAGES[key]) key = "TopicHome";
+var chain = [], k = key, guard = 0;
+while (k && PAGES[k] && guard++ < 10) { chain.unshift(k); k = PAGES[k][1]; }
+
+var ol = document.getElementById("trail");
+chain.forEach(function(p, i){
+  var li = document.createElement("li");
+  var last = i === chain.length - 1;
+  var label = PAGES[p][0];
+  if (last) {
+    li.className = "cur"; li.setAttribute("aria-current", "page");
+    li.innerHTML = (p === "TopicHome" ? '<span class="home">' + homeIco + "</span>" : "") + "<span></span>";
+    li.lastChild.textContent = label;
+  } else {
+    if (i > 0) li.className = "mid";
+    var a = document.createElement("a"); a.target = "_top"; a.href = url(p);
+    if (p === "TopicHome") { a.className = "home"; a.innerHTML = homeIco + "<span>Home</span>"; }
+    else a.textContent = label;
+    li.appendChild(a);
+  }
+  ol.appendChild(li);
+  if (i === 0 && chain.length > 2) { var d = document.createElement("li"); d.className = "dots"; d.textContent = "…"; ol.appendChild(d); }
+});
+
+/* Back = one level up in the site (works even when the page was opened from an email link) */
+var back = document.getElementById("back");
+var parent = PAGES[key][1];
+if (parent) back.href = url(parent); else back.style.display = "none";
+</script>
+</body>
+</html>
