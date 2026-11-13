@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logistics &amp; Shipping</title>
+<style>
+:root{--yellow:#FFD100;--ink:#1f1f1f;--muted:#6b6b6b;--line:#e6e6e6}
+*{box-sizing:border-box}
+html,body{margin:0;overflow:hidden;background:#fff;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;padding:2px}
+a.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .15s}
+a.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:translateY(-2px)}
+a.card:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.top{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#2b2b2b 0%,#151515 100%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--yellow)}
+.top .big{width:60px;height:60px;color:var(--yellow);transition:transform .2s}
+a.card:hover .big{transform:scale(1.08)}
+.top .lbl{position:absolute;left:14px;top:12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#bdbdbd;font-weight:600}
+.body{position:relative;flex:1;padding:12px 12px 28px}
+.t{font-size:15px;font-weight:600;line-height:1.3}
+.d{font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px}
+.d.ct span{display:block}
+.arr{position:absolute;right:12px;bottom:8px;width:16px;height:16px;color:#333}
+
+/* ===== Mobile: compact rows so every card fits inside the fixed-height SharePoint Embed ===== */
+@media (max-width:700px){
+html,body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.grid{grid-template-columns:1fr;gap:6px}
+a.card{flex-direction:row;align-items:stretch}
+a.card:hover{transform:none}
+.top{aspect-ratio:auto;flex:0 0 52px;width:52px;min-height:50px}
+.top::after{left:auto;top:0;right:0;bottom:0;width:4px;height:auto}
+.top .big{width:26px;height:26px}
+.top .lbl{display:none}
+.body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:6px 36px 6px 12px;min-height:50px}
+.t{font-size:14px;line-height:1.25}
+.d{margin-top:1px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d.ct span{display:inline}
+.d.ct span+span::before{content:" · "}
+.arr{top:50%;bottom:auto;margin-top:-8px}
+}
+</style>
+</head>
+<body>
+<div class="grid">
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Container-Loading-&amp;-Unloading.aspx">
+<div class="top"><span class="lbl">Logistics</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 3h14v13H1z"/><path d="M15 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/><path d="M5 7v5M8 7v5M11 7v5"/></svg></div>
+<div class="body"><div class="t">Container Loading &amp; Unloading</div><div class="d">Loading and unloading guidelines, photos and updates from the Logistics Team.</div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+<a class="card" target="_top" href="https://noltefze.sharepoint.com/sites/NolteFZEKnowledgeHub/SitePages/Container-Type.aspx">
+<div class="top"><span class="lbl">Logistics</span>
+<svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/></svg></div>
+<div class="body"><div class="t">Container Type</div><div class="d ct"><span>20' DV</span><span>40' DV</span><span>40' HC</span></div>
+<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+</a>
+
+</div>
+</body>
+</html>
